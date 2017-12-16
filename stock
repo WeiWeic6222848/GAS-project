@@ -112,7 +112,7 @@ class stock(tabel):
         self.content["chocoladeshot"] = doubleketting()
 
     def addStock(self,item):
-        self.content.insert(item, doubleketting())
+        self.insert(item, doubleketting())
         return True
 
     def deleteStock(self,item):
