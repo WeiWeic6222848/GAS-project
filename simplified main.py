@@ -3,7 +3,9 @@ import sys
 from Bestelling import *
 from adttabel import *
 from stock import *
-
+from functools import reduce
+from gebruiker import *
+from werknemer_modified import *
 
 class Chocolademelk:
     prijs=0
@@ -55,8 +57,7 @@ class Chocolademelk:
 
 
 def str_to_class(str):#code from https://stackoverflow.com/questions/1176136/convert-string-to-python-class-object, credit to sixthgear
-    return getattr(sys.modules[__name__], str)
-
+    return reduce(getattr, str.split("."), sys.modules[__name__])
 
 class Winkel:
     allewerknemers=Tabel()
@@ -83,7 +84,7 @@ class Winkel:
                 self.werknemersaantwerken.remove(i.id)
                 self.bestellingenfinished.insert(i.bestelling.timestamp,i.bestelling)
                 i.bestellingdone()#veranderen de bestelling van de werknemer terug naar None
-        if self.bestellingenwaiting.isempty()!=False and self.werknemerbeschikbaar.isEmpty()==False:
+        if self.bestellingenwaiting.isempty()==False and self.werknemerbeschikbaar.isEmpty()==False:
             self.werknemerbeschikbaar.getTop().bestellingenaannemen(self.bestellingenwaiting.gettop())
             self.werknemersaantwerken.insert(self.werknemerbeschikbaar.getTop().id,self.werknemerbeschikbaar.getTop())
             self.werknemerbeschikbaar.pop()
@@ -106,7 +107,7 @@ class Winkel:
 
 
 def initfunction(line,stock,winkel):
-    availablechoises={"shot","honing","chili","gebruiker","marshmallow","werknemer"}
+    availablechoises={"shot","honing","chilipeper","gebruiker","marshmallow","werknemer"}
     availableshots = {"wit","zwart","bruin","melk"}
     seperatedline = line.split(" ")
     if seperatedline[0] not in availablechoises:
@@ -118,24 +119,25 @@ def initfunction(line,stock,winkel):
                 print("check parameter in de lijn: ", line)
                 return False
             else:
-                counter=seperatedline[2]
+                counter=int(seperatedline[2])
                 for i in range(counter):
                     soort=seperatedline[1]
-                    temp=str_to_class(seperatedline[0])(soort,seperatedline[3],seperatedline[4],seperatedline[5])#345 is jaar maand dag
-                    stock.addstock(temp)
-        elif len(seperatedline)==5 and seperatedline not in {"shot","gebruiker","werknemer"}:
-            counter=seperatedline[1]
+                    temp=str_to_class("ChocoladeShot")(soort,seperatedline[3],seperatedline[4],seperatedline[5])#345 is jaar maand dag
+                    stock.addStock(temp)
+        elif len(seperatedline)==5 and seperatedline[0] not in {"shot","gebruiker","werknemer"}:
+            counter=int(seperatedline[1])
             for i in range(counter):
-                temp=str_to_class(seperatedline[0])(seperatedline[2],seperatedline[3],seperatedline[4])
-                stock.addstock(temp)
+                temp=str_to_class(seperatedline[0].capitalize())(seperatedline[2],seperatedline[3],seperatedline[4])
+                stock.addStock(temp)
         elif seperatedline[0] in{"gebruiker","werknemer" }and len(seperatedline)==4:
             voornaam=seperatedline[1]
             achternaam=seperatedline[2]
-            workloadofemailadress=int(seperatedline[3])
-            temp=str_to_class(seperatedline[0])(voornaam,achternaam,workloadofemailadress)
+            workloadofemailadress=seperatedline[3]
             if seperatedline[0]=="gebruiker":
+                temp = str_to_class(seperatedline[0].capitalize())(voornaam, achternaam, workloadofemailadress)
                 winkel.addgebruiker(temp)
             else:
+                temp = str_to_class(seperatedline[0].capitalize())(voornaam, achternaam, int(workloadofemailadress))
                 winkel.addwerknemers(temp)
             #voor gebruiker is 3 de emailadress en voor werknemer is 3 de workload
         else:
@@ -185,7 +187,10 @@ if __name__ =="__main__":
     counter=0
     for line in input:
         line=line.strip('\n')
+        if line[:5]=="chili":
+            line="chilipeper"+line[5:]
         print(line)
+
         if line=="init":
             initing=True
             starting=False
@@ -200,5 +205,5 @@ if __name__ =="__main__":
         if starting:
             if startingfunction(line,stock,winkel,counter)==False:
                 break
-            counter=line[0]
+            counter=int(line[0])
         #print(line)

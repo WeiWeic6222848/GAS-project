@@ -1,4 +1,4 @@
-class tabel:
+class Tabel:
     content=dict()
 
     def __init__(self):
@@ -19,10 +19,41 @@ class tabel:
     def isempty(self):
         return len(self.content)==0
 
+    def traverse(self):
+        temp=[]
+        for i in self.content:
+            temp.append(self.content[i])
+        return temp
 
-class queue(tabel):
-    #nu is deze inherited van adttabel
-    #denk ik
+class Node:
+    def __init__(self, item, next = None):
+        self.item = item
+        self.next = next
 
+class Stack:
     def __init__(self):
-        tabel.__init__(self)
+        self.top = None
+
+    def __del__(self):
+        self.top = None
+
+    def isEmpty(self):
+        return self.top is None
+
+    def push(self, newItem):
+        node = Node(newItem, self.top)
+        self.top = node
+        return True
+
+    def pop(self):
+        if self.isEmpty():
+            return None, False
+        oldtop = self.top
+        self.top = self.top.next
+        return oldtop, True
+
+    def getTop(self):
+        if self.isEmpty():
+            return None
+        return self.top.item
+
