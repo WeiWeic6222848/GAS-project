@@ -1,18 +1,10 @@
 class Werknemer:
-    def __init__(self,voornaam,achternaam,credit):
+    def __init__(self,voornaam,achternaam,workload):
         self.id = None
         self.voornaam = voornaam
         self.achternaam = achternaam
-        self.credit = credit
+        self.workload = workload
 
-    def createWerkNemer(self,id,voornaam,achternaam,credit):
-        self.id = id
-        self.voornaam = voornaam
-        self.achternaam = achternaam
-        self.credit = credit
 
-    def VeranderCredit(self,NewCredit):
-        self.credit = NewCredit
-
-    #def verwijderwerknemer
-
+    def VeranderWorkload(self,Newworkload):
+        self.workload = Newworkload
