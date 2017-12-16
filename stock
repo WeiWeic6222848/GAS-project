@@ -1,3 +1,29 @@
+import sys
+
+def str_to_class(str):
+    return getattr(sys.modules[__name__], str)
+
+class tabel:
+    content=dict()
+
+    def __init__(self):
+        self.content=dict()
+
+    def add(self,key,val):
+        self.content[key]=val
+
+    def remove(self,key):
+        self.content.pop(key)
+
+    def retrieve(self,key):
+        return self.content.get(key,None)
+
+    def size(self):
+        return len(self.content)
+
+    def isempty(self):
+        return len(self.content)==0
+        
 class node:
     def __init__(self,item=None,next=None,previous=None):
         self.item=item
@@ -11,24 +37,23 @@ class doubleketting:
         """
         self.head=node(None)
         self.head.next=self.head
-        self.head.previous=self.head
         self.size=0
 
-    def insert(self,item,position):
+    #insert altijd op de laatste plaats
+    def insert(self,item):
         """
         :param item: item to insert
-        :param position: position to insert
         :return: boolean succes gelukt of niet
         """
         counter=0
         a=self.head
-        while counter<position and counter<=self.size:
-            if counter==position-1 or counter==self.size:
+        while counter<=self.size:
+            if counter==self.size:
                 previous=a
             a=a.next
             counter+=1
-        previous.next=node(item,a,previous)#de volgende van de voorgangde zal nu verwijzen naar een nieuwe node die verwijst naar de element die origineel op dat plaats staat, en terugwijzing.
-        previous.next.next.previous=previous.next#analoog
+        previous.next=node(item,a,previous)#de volgende van de voorgangde zal nu verwijzen naar een nieuwe node
+                                           # die verwijst naar de element die origineel op dat plaats staat, en terugwijzing.
         self.size+=1
         return True
 
@@ -37,9 +62,6 @@ class doubleketting:
             return 1
         else:
             return 0
-
-    def getlength(self):
-        return self.size
 
     def traverse(self):
         counter=1
@@ -54,54 +76,9 @@ class doubleketting:
         else:
             print("this ketting is empty")
             return False
-
-    def delete(self,position):
-        counter=1
-        if position>self.size or position<1:
-            print("position out of range")
-            return False
-        else:
-            a=self.head.next
-            while counter<position:
-                a=a.next
-                counter += 1
-            a.previous.next=a.next#laten de voriger wijzen naar de volgende element.en dan a verwijderen
-            del a
-            self.size-=1
-            return True
-
-    def retrieve(self,position):
-        if position>self.size or position<1:
-            print("position out of range")
-            return False
-        else:
-            counter = 1
-            a=self.head.next
-            while counter<position:
-                a=a.next
-                counter+=1
-            return a.item
-
-class tabel:
-    content=dict()
-
-    def __init__(self):
-        self.content=dict()
-
-    def insert(self,key,val):
-        self.content[key]=val
-
-    def remove(self,key):
-        self.content.pop(key)
-
-    def retrieve(self,key):
-        return self.content.get(key,None)
-
-    def size(self):
-        return len(self.content)
-
-    def isempty(self):
-        return len(self.content)==0
+            
+    def delete(self,item):
+        pass
 
 class stock(tabel):
     def __init__(self):
@@ -111,12 +88,54 @@ class stock(tabel):
         self.content["marshmallow"] = doubleketting()
         self.content["chocoladeshot"] = doubleketting()
 
-    def addStock(self,item):
-        self.insert(item, doubleketting())
+    def addStock(self, item):
+        if type(item) == str_to_class("marshmallow"):
+            self.content["marshmallow"].insert(item)
+        elif type(item) == str_to_class("chocoladeshot"):
+            self.content["chocoladeshot"].insert(item)
+        elif type(item) == str_to_class("chilipeper"):
+            self.content["chilipeper"].insert(item)
+        elif type(item) == str_to_class("honing"):
+            self.content["honing"].insert(item)
         return True
 
-    def deleteStock(self,item):
-        if item in self.content:
-            self.remove(item)
-            return True
-        return False
+    def deleteStock(self, item):
+        if type(item) == str_to_class("marshmallow"):
+            self.content["marshmallow"].delete(item)
+        elif type(item) == str_to_class("chocoladeshot"):
+            self.content["chocoladeshot"].delete(item)
+        elif type(item) == str_to_class("chilipeper"):
+            self.content["chilipeper"].delete(item)
+        elif type(item) == str_to_class("honing"):
+            self.content["honing"].delete(item)
+        return True
+
+    #sort methode : producten met vroegst vervaldatum komt eerst
+    def sort(self):
+        pass
+
+class chilipeper(tabel):
+    def __init__(self, expiryDate):
+        tabel.__init__(self)
+        self.expiryDate = expiryDate
+        self.price = 0.25
+
+class honing(tabel):
+    def __init__(self, expiryDate):
+        tabel.__init__(self)
+        self.expiryDate = expiryDate
+        self.price = 0.50
+
+class marshmallow(tabel):
+    def __init__(self, expiryDate):
+        tabel.__init__(self)
+        self.expiryDate = expiryDate
+        self.price = 0.75
+
+class chocoladeShot(tabel):
+    def __init__(self,soort, expiryDate):
+        tabel.__init__(self)
+        self.expiryDate = expiryDate
+        self.price = 1.0
+        self.soort = soort
+
