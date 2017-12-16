@@ -1,20 +1,26 @@
 class Bestelling:
-    def __init__(self):
-        self.gebruikersid = None
-        self.timestamp = None
-        self.chocolademelkid = None
-        self.afgehaald = False
-        self.zoeksleutel = None
-        self.bestellingen = []
-
-    def createBestelling(self,gebruikersid,timestamp,chocolademelkid):
+    def __init__(self,gebruikersid,timestamp):
         self.gebruikersid = gebruikersid
         self.timestamp = timestamp
-        self.chocolademelkid = chocolademelkid
+        self.aantalshots = []    #in credits
+        self.extraIngredient = []
+        self.afgehaald = False
+        self.credits = 5 # in credits
 
-    def setAfgehaaldTrue(self):
+    def Afgehaald(self):
         self.afgehaald = True
 
-    #def berekenWorkload
-    # 5 credits voor chocolademelk
-    # 1 credti voor chocolademelk,honing...
+    def VoegShotToe(self,Shot):#
+        self.aantalshots.append(Shot)   #1 credit per cholade shot dus +1
+        self.credits += 1
+    def VoegIngredientToe(self,Ingredient):
+        self.extraIngredient.append(Ingredient)
+        self.credits += 1
+
+    def printBestelling(self):
+        print("Shots")
+        for i in self.aantalshots:
+            print(i,",")
+        print("Ingredienten")
+        for i in self.extraIngredient:
+            print(i,",")
