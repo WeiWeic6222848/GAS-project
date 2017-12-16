@@ -1,11 +1,9 @@
 from Queue_rij import Queue
 import sys
-from chilipeper import *
 from Bestelling import *
 from adttabel import *
+from stock import *
 
-class Stock:
-    pass
 
 class Chocolademelk:
     prijs=0
@@ -32,40 +30,43 @@ class Chocolademelk:
     def addingredient(self,ingredient):
         if ingredient=="chilipeper":
             self.chilipeper+=1
-            self.prijs+=Chilipeper.prijs
+            self.prijs+=Chilipeper.price
         elif ingredient=="marshmallow":
             self.marshmallow+=1
-            self.prijs+=marshmallow.prijs
+            self.prijs+=Marshmallow.price
         elif ingredient=="honing":
             self.honing+=1
-            self.prijs+=honing.prijs
+            self.prijs+=Honing.price
         elif ingredient=="wit":
             self.wit+=1
-            self.prijs+=chocoladeShot.prijs
+            self.prijs+=ChocoladeShot.price
         elif ingredient=="bruin":
             self.bruin+=1
-            self.prijs+=chocoladeShot.prijs
+            self.prijs+=ChocoladeShot.price
         elif ingredient=="melk":
             self.melk+=1
-            self.prijs+=chocoladeShot.prijs
+            self.prijs+=ChocoladeShot.price
         elif ingredient=="zwart":
             self.zwart+=1
-            self.prijs+=chocoladeShot.prijs
+            self.prijs+=ChocoladeShot.price
+
+    def berekenworkload(self):
+        return 5+self.bruin+self.wit+self.melk+self.marshmallow+self.honing+self.zwart+self.chilipeper
 
 
 def str_to_class(str):#code from https://stackoverflow.com/questions/1176136/convert-string-to-python-class-object, credit to sixthgear
     return getattr(sys.modules[__name__], str)
 
-def addproduct(kind,amount,year,mouth,day,kindofshot=0):
-    for i in range(amount):
-        temp=str_to_class(kind)()
 
 class Winkel:
+    allewerknemers=Tabel()
     werknemerbeschikbaar=Stack()
-    werknemers=Tabel()
+    werknemersaantwerken=Tabel()
     bestellingenwaiting=Queue()
     bestellingenfinished=Tabel()
-    bestellingenworking=Tabel()
+    nieuwbestellingen=Queue()
+    gebruikers=Tabel()
+
 
     def __init__(self):
         self.werknemerbeschikbaar=Stack()
@@ -73,25 +74,34 @@ class Winkel:
         self.bestellingen=Queue()
 
     def update(self):
-        #deze functie wordt elke keer opgeroepen wanneer de timestamp vernieuwd wordt, dit laat de werknemer bestellingen nemen en berekenen hoeveel minuut er nog is om de bestellingen te doen.
-        #en de bestellingen
-        pass
+
+        templist = self.werknemersaantwerken.traverse()
+        for i in templist:
+            i.werken()
+            if i.bestelling.afgehaald==True:
+                self.werknemerbeschikbaar.push(i)
+                self.werknemersaantwerken.remove(i.id)
+                self.bestellingenfinished.insert(i.bestelling.timestamp,i.bestelling)
+                i.bestellingdone()#veranderen de bestelling van de werknemer terug naar None
+        if self.bestellingenwaiting.isempty()!=False and self.werknemerbeschikbaar.isEmpty()==False:
+            self.werknemerbeschikbaar.getTop().bestellingenaannemen(self.bestellingenwaiting.gettop())
+            self.werknemersaantwerken.insert(self.werknemerbeschikbaar.getTop().id,self.werknemerbeschikbaar.getTop())
+            self.werknemerbeschikbaar.pop()
+
+        self.nieuwbestellingen=Queue() #reset de nieuwe bestelling na elke tijdstip
+
 
     def addbestelling(self,bestelling):
         self.bestellingenwaiting.insert(bestelling)
+        self.nieuwbestellingen.insert(bestelling)#dit is nodig bij log
 
+    def addgebruiker(self,gebruiker):
+        self.gebruikers.insert(gebruiker.email,gebruiker)
 
-
-#    def addStock(self,item):
- #       if type(item)==str_to_class("marshmallow"):
-  #          self.content["marshmallow"].insert(item)
-   #     elif type(item)==str_to_class("chocoladeshot"):
-    #        self.content["chocoladeshot"].insert(item)
-     #   elif type(item)==str_to_class("chilipeper"):
-      #      self.content["chilipeper"].insert(item)
-       # elif type(item)==str_to_class("honing"):
-        #    self.content["honing"].insert(item)
-        #return True
+    def addwerknemers(self,werknemer):
+        werknemer.id=self.allewerknemers.size()
+        self.allewerknemers.insert(werknemer.id,werknemer)
+        self.werknemerbeschikbaar.push(werknemer)
 
 
 
@@ -123,7 +133,10 @@ def initfunction(line,stock,winkel):
             achternaam=seperatedline[2]
             workloadofemailadress=int(seperatedline[3])
             temp=str_to_class(seperatedline[0])(voornaam,achternaam,workloadofemailadress)
-            stock.addstock(temp)
+            if seperatedline[0]=="gebruiker":
+                winkel.addgebruiker(temp)
+            else:
+                winkel.addwerknemers(temp)
             #voor gebruiker is 3 de emailadress en voor werknemer is 3 de workload
         else:
             print("check parameter in de lijn: ", line)
@@ -137,17 +150,26 @@ def startingfunction(line,stock,winkel,time):
     if seperatedline[1] not in availablechoises:
         print("check line:",line)
         return False
-    while seperatedline[0]>str(time):
+    if seperatedline[0].isdigit()==False:
+        print("check timestamp, it's wrong on line:", line)
+        return False
+    while int(seperatedline[0])>time:
         winkel.update()
         time+=1
     else:
         if seperatedline[1]=="bestel":
             chocolademelk=Chocolademelk()
             emailadress=seperatedline[2]
-            bestelling=Bestelling().createBestelling(emailadress,time,chocolademelk.id)
+            bestelling=Bestelling(emailadress,time)
             for i in range(3,len(seperatedline)):#this needs to change, possibly
                 chocolademelk.addingredient(seperatedline[i])
             winkel.addbestelling(bestelling)
+        elif seperatedline[1]=="stock":
+            linepreparedforinit=line[7:]+" unknown"+" unknown"+" unknown"
+            initfunction(linepreparedforinit,stock,winkel)
+        elif seperatedline[1]=="log":
+            pass
+
 
 
 
@@ -173,11 +195,10 @@ if __name__ =="__main__":
             initing=False
             continue
         if initing:
-            if initfunction(line,stock)==False:
+            if initfunction(line,stock,winkel)==False:
                 break
         if starting:
             if startingfunction(line,stock,winkel,counter)==False:
                 break
-            line=line.split(" ")
             counter=line[0]
         #print(line)
