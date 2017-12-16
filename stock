@@ -1,0 +1,15 @@
+from doubleketting import *
+
+  #dunno hoe dees ga werken
+
+class stock(doubleketting):
+    #dubbelgelinkt ketting met sort methode maken?
+    def __init__(self):
+        doubleketting.__init__(self)
+        self.warning = 0
+  
+  #doubleketting heeft al getLength mr heeft geen parameters nodig
+  #alles van doubleketting aanpassen?
+  
+    def getlengte(self, item):
+        return self.getlength(item) #dus deze regel zal niet werken
