@@ -1,9 +1,9 @@
 class Werknemer:
-    def __init__(self):
+    def __init__(self,voornaam,achternaam,credit):
         self.id = None
-        self.voornaam = None
-        self.achternaam = None
-        self.credit = None
+        self.voornaam = voornaam
+        self.achternaam = achternaam
+        self.credit = credit
 
     def createWerkNemer(self,id,voornaam,achternaam,credit):
         self.id = id
