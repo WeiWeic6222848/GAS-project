@@ -12,6 +12,6 @@ Pravesh:
 insert message
 
 Paul:
-insert
+test message
 
 zoda iedereen kan zien.. mss ni zo handig tho
