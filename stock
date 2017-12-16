@@ -1,16 +1,122 @@
+class node:
+    def __init__(self,item=None,next=None,previous=None):
+        self.item=item
+        self.next=next
+        self.previous=previous
 
-from doubleketting import *
-
-  #dunno hoe dees ga werken
-
-class stock(doubleketting):
-    #dubbelgelinkt ketting met sort methode maken?
+class doubleketting:
     def __init__(self):
-        doubleketting.__init__(self)
-        self.warning = 0
-  
-  #doubleketting heeft al getLength mr heeft geen parameters nodig
-  #alles van doubleketting aanpassen?
-  
-    def getlengte(self, item):
-return self.getlength(item) #dus deze regel zal niet werken
+        """
+        init ketting zonder element, + dummy head.
+        """
+        self.head=node(None)
+        self.head.next=self.head
+        self.head.previous=self.head
+        self.size=0
+
+    def insert(self,item,position):
+        """
+        :param item: item to insert
+        :param position: position to insert
+        :return: boolean succes gelukt of niet
+        """
+        counter=0
+        a=self.head
+        while counter<position and counter<=self.size:
+            if counter==position-1 or counter==self.size:
+                previous=a
+            a=a.next
+            counter+=1
+        previous.next=node(item,a,previous)#de volgende van de voorgangde zal nu verwijzen naar een nieuwe node die verwijst naar de element die origineel op dat plaats staat, en terugwijzing.
+        previous.next.next.previous=previous.next#analoog
+        self.size+=1
+        return True
+
+    def isempty(self):
+        if self.size==0:
+            return 1
+        else:
+            return 0
+
+    def getlength(self):
+        return self.size
+
+    def traverse(self):
+        counter=1
+        lijst=[]
+        if self.isempty()!=1:
+            a=self.head.next
+            while counter<=self.size:#loop de ketting door.
+                lijst.append(a.item)
+                a=a.next
+                counter+=1
+            return lijst
+        else:
+            print("this ketting is empty")
+            return False
+
+    def delete(self,position):
+        counter=1
+        if position>self.size or position<1:
+            print("position out of range")
+            return False
+        else:
+            a=self.head.next
+            while counter<position:
+                a=a.next
+                counter += 1
+            a.previous.next=a.next#laten de voriger wijzen naar de volgende element.en dan a verwijderen
+            del a
+            self.size-=1
+            return True
+
+    def retrieve(self,position):
+        if position>self.size or position<1:
+            print("position out of range")
+            return False
+        else:
+            counter = 1
+            a=self.head.next
+            while counter<position:
+                a=a.next
+                counter+=1
+            return a.item
+
+class tabel:
+    content=dict()
+
+    def __init__(self):
+        self.content=dict()
+
+    def insert(self,key,val):
+        self.content[key]=val
+
+    def remove(self,key):
+        self.content.pop(key)
+
+    def retrieve(self,key):
+        return self.content.get(key,None)
+
+    def size(self):
+        return len(self.content)
+
+    def isempty(self):
+        return len(self.content)==0
+
+class stock(tabel):
+    def __init__(self):
+        tabel.__init__(self)
+        self.content["chilipeper"] = doubleketting()
+        self.content["honing"] = doubleketting()
+        self.content["marshmallow"] = doubleketting()
+        self.content["chocoladeshot"] = doubleketting()
+
+    def addStock(self,item):
+        self.content.insert(item, doubleketting())
+        return True
+
+    def deleteStock(self,item):
+        if item in self.content:
+            self.remove(item)
+            return True
+        return False
