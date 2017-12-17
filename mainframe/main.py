@@ -36,7 +36,8 @@ class chocolademelk:
         self.bruin=bruin
         self.chilipeper=chilipeper
         self.honing=honing
-        self.marshmallow=marshmallow+zwart*1+wit*1+bruin*1+melk*1+marshmallow*0.75+chilipeper*0.25+honing*0.5
+        self.marshmallow=marshmallow
+        self.prijs=2+zwart*1+wit*1+bruin*1+melk*1+marshmallow*0.75+chilipeper*0.25+honing*0.5
 
     def addingredient(self,chiliperper=0,honing=0,marshmallow=0):
         self.chilipeper+=chiliperper
