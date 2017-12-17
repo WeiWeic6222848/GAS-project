@@ -28,7 +28,6 @@ class Chocolademelk:
         self.honing=honing
         self.marshmallow=marshmallow
         self.prijs=2+zwart*1+wit*1+bruin*1+melk*1+marshmallow*0.75+chilipeper*0.25+honing*0.5
-        open("winkellog.txt","w").close()
 
     def addingredient(self,ingredient):
         if ingredient=="chilipeper":
@@ -75,6 +74,7 @@ class Winkel:
         self.werknemerbeschikbaar=Stack()
         self.bestellingen=Queue()
         self.stock=stock
+        open("winkellog.txt","w").close()
 
     def update(self):
 
@@ -141,8 +141,10 @@ class Winkel:
         templijstofstring.append("|"+str(self.stock.content["honing"].size))
         templijstofstring.append("|"+str(self.stock.content["marshmallow"].size))
         templijstofstring.append("|"+str(self.stock.content["chilipeper"].size))
-        for i in templijstofstring:
-            input.write(i+"------")
+        for i in range(len(templijstofstring)):
+            input.write(templijstofstring[i])
+            if i!=len(templijstofstring)-1:
+                input.write("------")
         input.write("\n")
         input.close()
         ########################################log###################################################
@@ -213,10 +215,10 @@ def startingfunction(line,winkel,time):
     if seperatedline[0].isdigit()==False:
         print("check timestamp, it's wrong on line:", line)
         return False
-    while int(seperatedline[0])>time:
-        winkel.update()
-        time+=1
     else:
+        while int(seperatedline[0]) > time:
+            winkel.update()
+            time += 1
         if seperatedline[1]=="bestel":
             chocolademelk=Chocolademelk()
             emailadress=seperatedline[2]
@@ -225,9 +227,11 @@ def startingfunction(line,winkel,time):
                 chocolademelk.addingredient(seperatedline[i])
                 bestelling.VoegIngredientToe(seperatedline[i])
             winkel.addbestelling(bestelling)
+            winkel.update()
         elif seperatedline[1]=="stock":
             linepreparedforinit=line[8:]+" unknown"+" unknown"+" unknown"
             initfunction(linepreparedforinit,winkel)
+            winkel.update()
         elif seperatedline[1]=="log":
             winkel.update()
             templistofstring=[]
@@ -249,6 +253,7 @@ def startingfunction(line,winkel,time):
             input = open("winkellog.txt", "r")
             counter=0
             for logline in input:
+                logline=logline.strip("\n")
                 splitline=logline.split("------")
                 splitline.insert(0,str(counter))
                 print('{:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24}'.format(*splitline))
@@ -282,7 +287,7 @@ if __name__ =="__main__":
         if starting:
             if startingfunction(line,winkel,counter)==False:
                 break
-            counter=int(line[0])
+            counter=int(line[0])+1
         #print(line)
     input.close()
     pass
