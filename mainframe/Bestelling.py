@@ -6,9 +6,9 @@ class Bestelling:
         self.extraIngredient = []
         self.afgehaald = False
         self.credits = 5 # in credits
-
     def Afgehaald(self):
         self.afgehaald = True
+
 
     def VoegShotToe(self,Shot):#
         self.aantalshots.append(Shot)   #1 credit per cholade shot dus +1

@@ -61,7 +61,7 @@ class Stack:
         templist=[]
         temp=self.top
         while temp!=None:
-            templist.append(temp.item)
+            templist.insert(0,temp.item)
             temp=temp.next
         return templist
 

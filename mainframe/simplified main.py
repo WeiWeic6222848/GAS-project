@@ -119,25 +119,12 @@ class Winkel:
         if templist!=None:
             for i in templist:
                 tempstring+=str(i.credits)+","
+            tempstring=tempstring[:-1]
         templijstofstring.append("|"+tempstring)
-        templist=self.stock.content["chocoladeshot"].traverse()
-        wit=0
-        zwart=0
-        bruin=0
-        melk=0
-        for i in templist:
-            if i.soort=="wit":
-                wit+=1
-            elif i.soort=="zwart":
-                zwart+=1
-            elif i.soort=="bruin":
-                bruin+=1
-            elif i.soort=="melk":
-                melk+=1
-        templijstofstring.append("|"+str(wit))
-        templijstofstring.append("|"+str(melk))
-        templijstofstring.append("|"+str(bruin))
-        templijstofstring.append("|"+str(zwart))
+        templijstofstring.append("|"+str(self.stock.content["wit"].size))
+        templijstofstring.append("|"+str(self.stock.content["melk"].size))
+        templijstofstring.append("|"+str(self.stock.content["bruin"].size))
+        templijstofstring.append("|"+str(self.stock.content["zwart"].size))
         templijstofstring.append("|"+str(self.stock.content["honing"].size))
         templijstofstring.append("|"+str(self.stock.content["marshmallow"].size))
         templijstofstring.append("|"+str(self.stock.content["chilipeper"].size))
@@ -223,6 +210,9 @@ def startingfunction(line,winkel,time):
             chocolademelk=Chocolademelk()
             emailadress=seperatedline[2]
             bestelling=Bestelling(emailadress,time)
+            if winkel.gebruikers.retrieve(emailadress)==None:
+                tempgebruiker=Gebruiker("idk","idk",emailadress)
+                winkel.addgebruiker(tempgebruiker)
             for i in range(3,len(seperatedline)):#this needs to change, possibly
                 chocolademelk.addingredient(seperatedline[i])
                 bestelling.VoegIngredientToe(seperatedline[i])
@@ -249,14 +239,14 @@ def startingfunction(line,winkel,time):
             templistofstring.append("|honing")
             templistofstring.append("|marshmallow")
             templistofstring.append("|chili")
-            print('{:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} '.format(*templistofstring))
+            print('{:<10} {:<12} {:<15} {:<21} {:<21} {:<10} {:<10} {:<10} {:<10} {:<10} {:<12} {:<10} '.format(*templistofstring))
             input = open("winkellog.txt", "r")
             counter=0
             for logline in input:
                 logline=logline.strip("\n")
                 splitline=logline.split("------")
                 splitline.insert(0,str(counter))
-                print('{:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24} {:<24}'.format(*splitline))
+                print('{:<10} {:<12} {:<15} {:<21} {:<21} {:<10} {:<10} {:<10} {:<10} {:<10} {:<12} {:<10}'.format(*splitline))
                 counter+=1
 
 

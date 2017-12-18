@@ -1,0 +1,67 @@
+class node:
+    def __init__(self,item=None,next=None,previous=None):
+        self.item=item
+        self.next=next
+        self.previous=previous
+
+class doubleketting:
+    def __init__(self):
+        """
+        init ketting zonder element, + dummy head.
+        """
+        self.head=node(None)
+        self.head.next=self.head
+        self.size=0
+
+    #insert altijd op de laatste plaats
+    def insert(self,item):
+        """
+        :param item: item to insert
+        :return: boolean succes gelukt of niet
+        """
+        counter=0
+        a=self.head
+        while counter<=self.size:
+            if counter==self.size:
+                previous=a
+            a=a.next
+            counter+=1
+        previous.next=node(item,a,previous)#de volgende van de voorgangde zal nu verwijzen naar een nieuwe node
+                                           # die verwijst naar de element die origineel op dat plaats staat, en terugwijzing.
+        self.size+=1
+        return True
+
+    def isempty(self):
+        if self.size==0:
+            return 1
+        else:
+            return 0
+
+    def traverse(self):
+        counter=1
+        lijst=[]
+        if self.isempty()!=1:
+            a=self.head.next
+            while counter<=self.size:#loop de ketting door.
+                lijst.append(a.item)
+                a=a.next
+                counter+=1
+            return lijst
+        else:
+            print("this ketting is empty")
+            return False
+
+    def delete(self,position=1):
+        counter=1
+        if position>self.size or position<1:
+            print("position out of range")
+            return False
+        else:
+            a=self.head.next
+            while counter<position:
+                a=a.next
+                counter += 1
+            a.previous.next=a
+            del a
+            self.size-=1
+            return True

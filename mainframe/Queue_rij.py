@@ -65,7 +65,6 @@ class Queue:
             counter=0
             a=self.backptr.next
             while counter<self.size:
-                print(a.item)
                 templist.append(a.item)
                 a=a.next
                 counter+=1
