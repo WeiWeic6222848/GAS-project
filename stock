@@ -1,3 +1,4 @@
+from doubleketting import *
 import sys
 
 def str_to_class(str):
@@ -23,76 +24,31 @@ class tabel:
 
     def isempty(self):
         return len(self.content)==0
-        
-class node:
-    def __init__(self,item=None,next=None,previous=None):
-        self.item=item
-        self.next=next
-        self.previous=previous
 
-class doubleketting:
-    def __init__(self):
-        """
-        init ketting zonder element, + dummy head.
-        """
-        self.head=node(None)
-        self.head.next=self.head
-        self.size=0
-
-    #insert altijd op de laatste plaats
-    def insert(self,item):
-        """
-        :param item: item to insert
-        :return: boolean succes gelukt of niet
-        """
-        counter=0
-        a=self.head
-        while counter<=self.size:
-            if counter==self.size:
-                previous=a
-            a=a.next
-            counter+=1
-        previous.next=node(item,a,previous)#de volgende van de voorgangde zal nu verwijzen naar een nieuwe node
-                                           # die verwijst naar de element die origineel op dat plaats staat, en terugwijzing.
-        self.size+=1
-        return True
-
-    def isempty(self):
-        if self.size==0:
-            return 1
-        else:
-            return 0
-
-    def traverse(self):
-        counter=1
-        lijst=[]
-        if self.isempty()!=1:
-            a=self.head.next
-            while counter<=self.size:#loop de ketting door.
-                lijst.append(a.item)
-                a=a.next
-                counter+=1
-            return lijst
-        else:
-            print("this ketting is empty")
-            return False
-            
-    def delete(self,item):
-        pass
-
-class stock(tabel):
+class Stock(tabel):
     def __init__(self):
         tabel.__init__(self)
         self.content["chilipeper"] = doubleketting()
         self.content["honing"] = doubleketting()
         self.content["marshmallow"] = doubleketting()
-        self.content["chocoladeshot"] = doubleketting()
+        #self.content["chocoladeshot"] = doubleketting()
+        self.content["melk"] = doubleketting()
+        self.content["wit"] = doubleketting()
+        self.content["zwart"] = doubleketting()
+        self.content["bruin"] = doubleketting()
 
     def addStock(self, item):
         if type(item) == str_to_class("marshmallow"):
             self.content["marshmallow"].insert(item)
-        elif type(item) == str_to_class("chocoladeshot"):
-            self.content["chocoladeshot"].insert(item)
+        elif type(item) == str_to_class("ChocolateShot"):
+            if item.soort=="wit":
+                self.content["wit"].insert(item)
+            elif item.soort=="melk":
+                self.content["melk"].insert(item)
+            elif item.soort=="zwart":
+                self.content["zwart"].insert(item)
+            elif item.soort=="bruin":
+                self.content["bruin"].insert(item)
         elif type(item) == str_to_class("chilipeper"):
             self.content["chilipeper"].insert(item)
         elif type(item) == str_to_class("honing"):
@@ -101,38 +57,45 @@ class stock(tabel):
 
     def deleteStock(self, item):
         if type(item) == str_to_class("marshmallow"):
-            self.content["marshmallow"].delete(item)
-        elif type(item) == str_to_class("chocoladeshot"):
-            self.content["chocoladeshot"].delete(item)
+            self.content["marshmallow"].delete()
+        elif type(item) == str_to_class("ChocolateShot"):
+            if item.soort == "wit":
+                self.content["wit"].delete()
+            elif item.soort == "melk":
+                self.content["melk"].delete()
+            elif item.soort == "zwart":
+                self.content["zwart"].delete()
+            elif item.soort == "bruin":
+                self.content["bruin"].delete()
         elif type(item) == str_to_class("chilipeper"):
-            self.content["chilipeper"].delete(item)
+            self.content["chilipeper"].delete()
         elif type(item) == str_to_class("honing"):
-            self.content["honing"].delete(item)
+            self.content["honing"].delete()
         return True
 
     #sort methode : producten met vroegst vervaldatum komt eerst
     def sort(self):
         pass
 
-class chilipeper(tabel):
+class Chilipeper(tabel):
     def __init__(self, expiryDate):
         tabel.__init__(self)
         self.expiryDate = expiryDate
         self.price = 0.25
 
-class honing(tabel):
+class Honing(tabel):
     def __init__(self, expiryDate):
         tabel.__init__(self)
         self.expiryDate = expiryDate
         self.price = 0.50
 
-class marshmallow(tabel):
+class Marshmallow(tabel):
     def __init__(self, expiryDate):
         tabel.__init__(self)
         self.expiryDate = expiryDate
         self.price = 0.75
 
-class chocoladeShot(tabel):
+class ChocoladeShot(tabel):
     def __init__(self,soort, expiryDate):
         tabel.__init__(self)
         self.expiryDate = expiryDate
