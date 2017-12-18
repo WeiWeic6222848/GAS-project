@@ -38,7 +38,7 @@ class Stock(tabel):
         self.content["bruin"] = doubleketting()
 
     def addStock(self, item):
-        if type(item) == str_to_class("marshmallow"):
+        if type(item) == str_to_class("Marshmallow"):
             self.content["marshmallow"].insert(item)
         elif type(item) == str_to_class("ChocolateShot"):
             if item.soort=="wit":
@@ -49,27 +49,26 @@ class Stock(tabel):
                 self.content["zwart"].insert(item)
             elif item.soort=="bruin":
                 self.content["bruin"].insert(item)
-        elif type(item) == str_to_class("chilipeper"):
+        elif type(item) == str_to_class("Chilipeper"):
             self.content["chilipeper"].insert(item)
-        elif type(item) == str_to_class("honing"):
+        elif type(item) == str_to_class("Honing"):
             self.content["honing"].insert(item)
         return True
 
     def deleteStock(self, item):
-        if type(item) == str_to_class("marshmallow"):
+        if item == "marshmallow":
             self.content["marshmallow"].delete()
-        elif type(item) == str_to_class("ChocolateShot"):
-            if item.soort == "wit":
-                self.content["wit"].delete()
-            elif item.soort == "melk":
-                self.content["melk"].delete()
-            elif item.soort == "zwart":
-                self.content["zwart"].delete()
-            elif item.soort == "bruin":
-                self.content["bruin"].delete()
-        elif type(item) == str_to_class("chilipeper"):
+        elif item == "wit":
+            self.content["wit"].delete()
+        elif item == "melk":
+            self.content["melk"].delete()
+        elif item == "zwart":
+            self.content["zwart"].delete()
+        elif item == "bruin":
+            self.content["bruin"].delete()
+        elif item == "chilipeper":
             self.content["chilipeper"].delete()
-        elif type(item) == str_to_class("honing"):
+        elif item == "honing":
             self.content["honing"].delete()
         return True
 
