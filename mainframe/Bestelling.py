@@ -1,8 +1,9 @@
 class Bestelling:
-    def __init__(self,gebruikersid,timestamp):
-        self.gebruikersid = gebruikersid
-        self.timestamp = timestamp
-        self.aantalshots = []    #in credits
+    def __init__(self,gebruikersid,timestamp): #bestelling.
+        self.gebruikersid = gebruikersid #contains id
+        self.timestamp = timestamp #timestamp
+        self.aantalshots = []
+        #i didn't really use the aantal shot, it will be a lot more harder if i user it.
         self.extraIngredient = []
         self.afgehaald = False
         self.credits = 5 # in credits
@@ -18,9 +19,12 @@ class Bestelling:
         self.credits += 1
 
     def printBestelling(self):
-        print("Shots")
-        for i in self.aantalshots:
-            print(i,",")
+        #beacause it's all string form, this is way easier to print.
+        print("Shots:")
+        for i in self.aantalshots:#well this is not going to work
+            print(i,",",end="")
+            print()
         print("Ingredienten")
         for i in self.extraIngredient:
-            print(i,",")
+            print(i,",",end="")
+            print()

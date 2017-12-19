@@ -1,4 +1,5 @@
 from ketting import node
+#from previous taak, modified
 class Queue:
     def __init__(self):
         self.backptr=None

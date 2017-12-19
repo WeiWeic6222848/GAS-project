@@ -2,8 +2,9 @@ from doubleketting import *
 import sys
 from functools import reduce
 
-def str_to_class(str):#code from https://stackoverflow.com/questions/1176136/convert-string-to-python-class-object, credit to sixthgear
+def str_to_class(str):#code from https://stackoverflow.com/questions/1176136/convert-string-to-python-class-object, credit to sixthgear and more.
     return reduce(getattr, str.split("."), sys.modules[__name__])
+
 
 class tabel:
     content=dict()
@@ -33,12 +34,14 @@ class Stock(tabel):
         self.content["honing"] = doubleketting()
         self.content["marshmallow"] = doubleketting()
         #self.content["chocoladeshot"] = doubleketting()
+        #I kinda need this change to make it easier for me and for my team.
         self.content["melk"] = doubleketting()
         self.content["wit"] = doubleketting()
         self.content["zwart"] = doubleketting()
         self.content["bruin"] = doubleketting()
 
     def addStock(self, item):
+        #this gets a class object, and we need to call str to class to get the class.. i guess? and once we know what kind of item it is, just insert it into the right chain.
         if type(item) == str_to_class("Marshmallow"):
             self.content["marshmallow"].insert(item)
         elif type(item) == str_to_class("ChocoladeShot"):
@@ -57,6 +60,7 @@ class Stock(tabel):
         return True
 
     def deleteStock(self, item):
+        #same thing, but now we're getting a string, and it's lot more easier.
         if item == "marshmallow":
             self.content["marshmallow"].delete()
         elif item == "wit":
@@ -74,9 +78,11 @@ class Stock(tabel):
         return True
 
     #sort methode : producten met vroegst vervaldatum komt eerst
-    def sort(self):
+    def sort(self):#oh.. well.. i guess it's in the final version then.
         pass
 
+
+#from here on it's just the class of all the ingredients, with a fixed price and init function which inits the expiry date.
 class Chilipeper(tabel):
     price = 0.25
     def __init__(self, expiryDate,yy,mm):

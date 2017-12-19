@@ -1,4 +1,4 @@
-class Tabel:
+class Tabel:#tabel wrapper. naive version
     content=dict()
 
     def __init__(self):
@@ -25,7 +25,7 @@ class Tabel:
             temp.append(self.content[i])
         return temp
 
-class Node:
+class Node:#this is just modifield adt code from previous opdracht
     def __init__(self, item, next = None):
         self.item = item
         self.next = next
