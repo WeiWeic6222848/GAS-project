@@ -10,8 +10,10 @@ gebruiker Tom Hofkens tom.hofkens@uantwerpen.be
 werknemer Wim Hofkens 5
 werknemer Pravesh Gurung 7
 start
-1 bestel tom.hofkens@uantwerpen.be wit melk bruin zwart melk chili chili marshmallow marshmallow honing
-2 bestel tam.hofkens@uantwerpen.be melk melk melk melk melk chili marshmallow honing bruin bruin zwart
-3 bestel tem.hofkens@uantwerpen.be
+1 bestel tom.hofkens@uantwerpen.be wit 2 melk 5 bruin zwart chili 2 marshmallow 2 honing
+1 log
+1 bestel tom.hofkens@uantwerpen.be
+2 bestel tom.hofkens@uantwerpen.be melk 19
+2 bestel tom.hofkens@uantwerpen.be melk 7 chili 4 marshmallow honing bruin 2 zwart
 4 stock shot melk 4
 8 log

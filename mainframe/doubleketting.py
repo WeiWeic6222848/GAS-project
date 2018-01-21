@@ -11,6 +11,7 @@ class doubleketting:
         """
         self.head=node(None)
         self.head.next=self.head
+        self.head.previous=self.head
         self.size=0
 
     #insert altijd op de laatste plaats
@@ -28,6 +29,7 @@ class doubleketting:
             counter+=1
         previous.next=node(item,a,previous)#de volgende van de voorgangde zal nu verwijzen naar een nieuwe node
                                            # die verwijst naar de element die origineel op dat plaats staat, en terugwijzing.
+        a.previous=a.previous.next
         self.size+=1
         return True
 
@@ -61,7 +63,8 @@ class doubleketting:
             while counter<position:
                 a=a.next
                 counter += 1
-            a.previous.next=a
+            a.previous.next=a.next
+            a.next.previous=a.previous
             del a
             self.size-=1
             return True

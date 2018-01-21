@@ -99,7 +99,7 @@ class Winkel:
     #just simply add it to the list if it doesn't exist yet.
 
 
-    def __init__(self,stock):
+    def __init__(self):
         #on init, a class of stock must be provided.
         #There is a place of improvement here.
         #the reading input function can be directly transferred into the Winkel class.
@@ -107,7 +107,10 @@ class Winkel:
         #gonna change it.. very soon
         self.werknemerbeschikbaar=Stack()
         self.bestellingen=Queue()
-        self.stock=stock
+        self.stock=Stock()
+
+        ##reading the init text##
+
         open("winkellog.txt","w").close()#deleting the previous winkel logging.
         #we can also make every unique winkel write their own unique winkellog. which makes the project works not only for one but for multiple winkels at the same time.
 
@@ -342,7 +345,7 @@ def startingfunction(line,winkel,time):
 
 
             for i in templistofstring:#print every item formatted on the left 22 space.
-                print('{:<22}'.format(i),end="")
+                print('\033[4m', '{:<22}'.format(i), '\033[0m', end="")
             print()#print a white line
             input = open("winkellog.txt", "r")#reading the log file.
             counter=0#counter is for the timestip, it starts at one and goes to the end of the log.
@@ -351,7 +354,7 @@ def startingfunction(line,winkel,time):
                 splitline=logline.split("------")#this is a kinda unique splitsymbol, so i think that no one is going to mess it up.
                 splitline.insert(0,str(counter))#the firstthing should be the timetip, so just add it into the splitted line
                 for i in splitline:
-                    print('{:<22}'.format(i), end="")
+                    print('\033[4m','{:<22}'.format(i),'\033[0m',end="")
                 print()#manually print a return
                 counter+=1#timetip is increased.
 
@@ -369,7 +372,7 @@ if __name__ =="__main__":
     starting=False
 
     stock=Stock()
-    winkel=Winkel(stock)#redundant.
+    winkel=Winkel()#redundant.
 
     counter=0#timestip.
 

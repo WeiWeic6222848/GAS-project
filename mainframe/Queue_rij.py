@@ -71,6 +71,18 @@ class Queue:
                 counter+=1
         return templist
 
+    def insertonfront(self,item):
+
+        if self.size==0:
+            self.backptr=node(item)
+            self.backptr.next=self.backptr
+            self.size+=1
+            return True
+        else:
+            self.backptr.next=node(item,self.backptr.next)
+            self.size+=1
+            return True
+
 if __name__=="__main__":
     a=Queue()
     a.insert("hey")

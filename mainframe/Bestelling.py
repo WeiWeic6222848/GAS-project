@@ -1,3 +1,5 @@
+from stock import *
+
 class Bestelling:
     def __init__(self,gebruikersid,timestamp): #bestelling.
         self.gebruikersid = gebruikersid #contains id
@@ -6,6 +8,7 @@ class Bestelling:
         #i didn't really use the aantal shot, it will be a lot more harder if i user it.
         self.extraIngredient = []
         self.afgehaald = False
+        self.prijs=2
         self.credits = 5 # in credits
     def Afgehaald(self):
         self.afgehaald = True
@@ -16,6 +19,10 @@ class Bestelling:
         self.credits += 1
     def VoegIngredientToe(self,Ingredient):
         self.extraIngredient.append(Ingredient)
+        if Ingredient in ["Wit","Zwart","Bruin","Melk"]:
+            self.prijs+=ChocoladeShot.price
+        else:
+            self.prijs+=str_to_class(Ingredient).price
         self.credits += 1
 
     def printBestelling(self):

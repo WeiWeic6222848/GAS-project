@@ -63,5 +63,6 @@ class Stack:
         while temp!=None:
             templist.insert(0,temp.item)
             temp=temp.next
+        templist.reverse()
         return templist
 
