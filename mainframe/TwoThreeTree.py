@@ -499,51 +499,6 @@ if __name__ == '__main__':
 
 
     tree = TwoThreeTree()
-    tree2 = TwoThreeTree()
-    tree2.insert(3,"Wat")
-    tree.insert(0,"text0")
-    #tree.insert(25,"text25")
-    tree.insert(1,"text1")
-    tree.insert(2,"text2")
-    tree.insert(3,"text3")
-    tree.insert(4,"text4")
-    tree.insert(5,"text5")
-    tree.insert(6,"text6")
-    tree.insert(7,"text7")
-
-    #tree.insert(40,"text40")
-    #tree.insert(70,"text70")
-    #tree.insert(95,"text95")
-    #tree.insert(44,"text44")
-    #tree.insert(13,"text13")
-    #tree.insert(8,"text8")
-    #tree.insert(100,"text100")
-
-
-
-    #tree.deleteItem(70)
-    #tree.deleteItem(44)
-    #tree.deleteItem(35)
-    tree.deleteItem(0)
-    tree.deleteItem(1)
-    #tree.deleteItem(25)
-    #tree.deleteItem(25)
-    #tree.deleteItem(25)
-    #tree.inorder()
-
-    #print(tree.self)
-
-    #tree.deleteItem(95)
-
-    print(tree.inorder())
-    print(tree2.inorder())
-
-    pass
-    #print(tree.self)
-
-
-    """
-    tree = TwoThreeTree()
     tree.insert(15,"text15")
     tree.insert(6,"text6")
     tree.insert(20,"text20")
@@ -586,4 +541,39 @@ if __name__ == '__main__':
     tree.deleteItem(6)
     print("#######")
     print(tree.inorder())
-    """
+
+    tree.insert(7,"text7")
+    print("#######")
+    print(tree.inorder())
+
+    tree.insert(1, "text1")
+    print("#######")
+    print(tree.inorder())
+
+    tree.insert(8, "text8")
+    print("#######")
+    print(tree.inorder())
+
+    tree.insert(14, "text14")
+    print("#######")
+    print(tree.inorder())
+
+    tree.insert(2, "text2")
+    print("#######")
+    print(tree.inorder())
+
+    tree.insert(13, "text13")
+    print("#######")
+    print(tree.inorder())
+
+    tree.deleteItem(8)
+    print("#######")
+    print(tree.inorder())
+
+    tree.deleteItem(2)
+    print("#######")
+    print(tree.inorder())
+
+    tree.deleteItem(14)
+    print("#######")
+    print(tree.inorder())
