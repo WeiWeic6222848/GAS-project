@@ -5,7 +5,7 @@
 #I'm going to ask some question in the next practicum for sure..
 #
 #Greets
-
+from copy import deepcopy
 
 
 class dataitem:#dataitem is an class which contains an random content object of any kind and a searchkey object which is going to be an integer
@@ -48,7 +48,7 @@ class node:#node is a class with a nodeitem which is a dataitem and a pointer to
         temp = self
         templist=[]
         while temp != None:
-            print(temp.nodeitem.content,"          Key:",temp.nodeitem.key)
+            #print(temp.nodeitem.content,"          Key:",temp.nodeitem.key)
             templist.append(temp.nodeitem)
             temp=temp.next
         return templist
@@ -72,16 +72,17 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
 
     size=0     #size indicates the size of the hashtable, it doesn't have a dafault value so you have to input it.
 
-    array=dict()   #array, or hashtable is an dictionary, I restricted the length of it on the functions but if someone goes accros the wall then it might be broken.
+    #array=dict()   #array, or hashtable is an dictionary, I restricted the length of it on the functions but if someone goes accros the wall then it might be broken.
 
-    def __init__(self,size,probing):#triviaal
+    def __init__(self,size=100,probing=0):#triviaal
         self.size=size
         self.probing=probing
+        self.array = dict().copy()
 
     def openadressing(self,item,mode=0): #item parameter is used both as key and as an item, since that they all need to probe, i just merged them into some strange thing..
         """
-        :param item: this is simply the item to add or if it's not an insertion, a key to delete or to retrieve
-        :param mode: this parameter indicates the working of this probing, it can be either an insertion(if mode==0) a deletion(mode==1) or a retrieve(mode==2)
+        :param item: this is simply the item to add or if it's not an insert, a key to delete or to retrieve
+        :param mode: this parameter indicates the working of this probing, it can be either an insert(if mode==0) a delete(mode==1) or a retrieve(mode==2)
         by doing this i don't have to write a lot of codes.
         although maybe i can also write something that only returns an probing adress.. doesn't really know but i think that there might be a better way...
         :return: diffrent mode returns diffrent things.
@@ -91,7 +92,7 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
         if mode==0:
             originalposition=item.key%self.size #calculate the original starting position first,
         else:
-            originalposition=item%self.size #if it's not insertion then item is a key value, and must be modded directly, don't call .key property.
+            originalposition=item%self.size #if it's not insert then item is a key value, and must be modded directly, don't call .key property.
         counter=1 #first try of probing
         currentposition=originalposition+counter #either sequential or quatratic, the first step is always +1
         #note that im not checking the original position beacause it's already tested before this function will be called.
@@ -99,12 +100,12 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
             currentposition -= self.size
         while currentposition!=originalposition:#since that we did +1 to the original position, the currentposition is nomore the same as original, we can start probing until it goes back to original
             if mode==0:
-                #insertion, if currentposition doesn't have any item then insert item
+                #insert, if currentposition doesn't have any item then insert item
                 if self.array.get(currentposition,None)==None:
                     self.array[currentposition]=item
                     return True
             elif mode==1:
-                #deletion, if the key of current position is the given key, delete(pop) it.
+                #delete, if the key of current position is the given key, delete(pop) it.
                 if self.array.get(currentposition,dataitem(None,None)).key==item:
                     self.array.pop(currentposition,None)
                     return True
@@ -129,14 +130,14 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
         return dataitem(None,None)#if mode==2 just return an empty dataitem
 
     """
-    def doublehashing(self,val,deletion=False):
+    def doublehashing(self,val,delete=False):
         originalposition=val%self.size
         hashingstep=23-val%23
         counter=1
         if self.probing==2: #2=double hashing
             currentposition=originalposition+hashingstep*counter
             while currentposition!=originalposition:
-                if deletion==False:
+                if delete==False:
                     if self.array.get(currentposition,None)==None:
                         self.array[currentposition]=val
                         return True
@@ -148,7 +149,7 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
                 currentposition=originalposition+counter*hashingstep
                 while currentposition>=self.size:
                     currentposition-=self.size
-            if deletion==False:
+            if delete==False:
                 print("the probing failed on double hasing, maybe.. idk")
             else:
                 print("wtf.... aahahha")
@@ -158,7 +159,7 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
     def seperatechaining(self,item,mode=0):
         if self.probing==3: #3=seperatechaining, only written for test purpose
             if mode == 0:
-                #if it's an insertion, just calculate the position and call the insertion in node class
+                #if it's an insert, just calculate the position and call the insert in node class
                 position = item.key % self.size
                 if self.array.get(position, None) == None:
                     #if there is nothing yet, make a new node.
@@ -167,8 +168,8 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
                     self.array[position]=self.array[position].addonemore(item)
                 return True
             elif mode==1:
-                #deletion, now if there is anything to delete, then call the deletion in node class.
-                #maybe i doesn't even have to test wether it's empty, beacause i already done it in the main call of deletion.
+                #delete, now if there is anything to delete, then call the delete in node class.
+                #maybe i doesn't even have to test wether it's empty, beacause i already done it in the main call of delete.
                 #can't remember clearly.
                 position = item % self.size
                 if self.array.get(position, None) == None:
@@ -192,11 +193,21 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
 
 
 
-
-
-    def insertion(self,item):
-        #insertion which accepts an dataitem with proper key and content to insert
-        if len(self.array)<self.size and self.array.get(item.key%self.size,None)==None: #testing if the hashmap is full, and wether the first position is already take
+    def getintvalueofstring(self,key):
+        tempint=0
+        for i in range (len(key)):
+            tempint+=ord(key[i])+2**i
+        return tempint
+    
+    def getlength(self):
+        return len(self.traverse())
+    
+    def insert(self,key,value):
+        if type(key)!=type(1):
+            key=self.getintvalueofstring(key)
+        item=dataitem(value,key)
+        #insert which accepts an dataitem with proper key and content to insert
+        if len(self.array)<self.size and self.array.get(key%self.size,None)==None: #testing if the hashmap is full, and wether the first position is already take
             #if not, just add it into list
             if self.probing!=3:
                 self.array[item.key%self.size]=item
@@ -212,8 +223,10 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
                 return self.seperatechaining(item)
 
 
-    def deletion(self,val):
-        #deletion takes val which is the key of a certain dataitem
+    def delete(self,val):
+        #delete takes val which is the key of a certain dataitem
+        if type(val)!=type(1):
+            val=self.getintvalueofstring(val)
         if self.probing!=3:
             if self.array.get(val%self.size,dataitem(None,None)).key==val: #if the first possible place is the correct one, just delete it
                 #note. nothing, i went to change some code and forget what i wanted to write here.
@@ -221,18 +234,21 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
                 return True
             else:#if not on first place, just start probing mode1
                 return self.openadressing(val, 1)
-        else:#deletion of chainning just call function
+        else:#delete of chainning just call function
                 return self.seperatechaining(val,1)
 
     def traverse(self):
         #this is simple traverse tho. no list outputted
+        templist=[]
         if self.probing!=3:
             for i in self.array:
-                print (self.array[i].content)
+                templist.append(self.array[i].content)
+                #print (self.array[i].content)
         else:
             for i in self.array:
                 #probe3 calling nodetraverse.
-                self.array[i].nodetraverse()
+                templist+=self.array[i].nodetraverse()
+        return templist
 
     def switchprobing(self,probe):
         #to swap probing, simply make a temp hashmap and insert all the comtent of the current map into the temp map.
@@ -245,14 +261,14 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
             if self.probing!=3:
                 if succes == False:
                     break
-                succes=temp.insertion(self.array[i])
+                succes=temp.insert(self.array[i].key,self.array[i])
             else:
                 #if chained, get every item on chain and add then
                 templist=self.array[i].nodetraverse()
                 for j in templist:
                     if succes == False:
                         break
-                    succes = temp.insertion(j)
+                    succes = temp.insert(j.key,j)
         if succes==False:#if one fails this will come
             print("er is een circulaire probing na switch of er is geen genoeg plaats na switch, stopping")
             return False
@@ -265,13 +281,15 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
         return len(self.array)==0
 
     def retrieve(self,key):
+        if type(key)!=type(1):
+            key=self.getintvalueofstring(key)
         if self.probing != 3:
             if self.array.get(key % self.size, dataitem(None, None)).key == key:  # if the first one.. return this else start probe
                 return self.array[key % self.size]
             else:
                 return self.openadressing(key, 2)
         elif self.probing == 3:
-            if self.array.get(key % self.size,node(None)).nodeitem.key == key:  # if first one return first one else start probe.?
+            if self.array.get(key % self.size,node(dataitem(None,None))).nodeitem.key == key:  # if first one return first one else start probe.?
                 return self.array[key%self.size].nodeitem
             else:
                 return self.seperatechaining(key, 2)
@@ -287,7 +305,7 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
         else:
             for i in self.array:
                 #probe3 calling nodetraverse.
-                print (i,": ")
+                #print (i,": ")
                 self.array[i].nodetraverse()
                 print ()
 
@@ -295,11 +313,12 @@ class hashmap:#hashmap is the main class in this code, it has an dictionary whic
 if __name__ == "__main__":
     #some test, to lazy to write doctest
     temp=hashmap(61,0) #make a temp hashmap
-    temp.insertion(dataitem("i am a interger 5",5)) #insert item with content and key 5
-    temp.insertion(dataitem("idk why",5))#only to illustrate that the sequential probing works, in the real situation this will not happend i think.
-    temp.insertion(dataitem(88888,5))
-    temp.insertion(dataitem("apeark",200))
-    temp.insertion(dataitem("kay",82205))
+    temp2=hashmap(61,0) #make a temp hashmap
+    temp.insert(5,"i am a interger 5") #insert item with content and key 5
+    temp.insert(5,"idk why")#only to illustrate that the sequential probing works, in the real situation this will not happend i think.
+    temp.insert(5,88888)
+    temp.insert(200,"apeark")
+    temp.insert(82205,"kay")
     print("expected 5 elements to be printed got:")
     temp.testtraverse()
     #this should show all 5 contents, in random sequence
@@ -311,8 +330,8 @@ if __name__ == "__main__":
     print()
     print()
 
-    temp.insertion(dataitem("im a replacer",20))
-    temp.deletion(200)
+    temp.insert(20,"im a replacer")
+    temp.delete(200)
     print("expected 5 elements to be printed and apeark replaced with replacer")
     temp.testtraverse()
     print()
@@ -324,7 +343,7 @@ if __name__ == "__main__":
     print()
 
     print("expected an extra item 50 to be printed and the place of item with key 5 should be following the quatratic rule and:")
-    temp.insertion(dataitem(50,5))
+    temp.insert(50,5)
     temp.testtraverse()
     print()
     print()
@@ -335,6 +354,7 @@ if __name__ == "__main__":
     print()
 
     print("expected an printed list with the same element and:")
+    #this doesn't work anymore sinds i commented out the print function. for main.
     temp.testtraverse()
     print()
     print()
