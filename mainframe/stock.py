@@ -5,31 +5,9 @@ from functools import reduce
 def str_to_class(str):#code from https://stackoverflow.com/questions/1176136/convert-string-to-python-class-object, credit to sixthgear and more.
     return reduce(getattr, str.split("."), sys.modules[__name__])
 
-
-class tabel:
-    content=dict()
-
-    def __init__(self):
-        self.content=dict()
-
-    def add(self,key,val):
-        self.content[key]=val
-
-    def remove(self,key):
-        self.content.pop(key)
-
-    def retrieve(self,key):
-        return self.content.get(key,None)
-
-    def size(self):
-        return len(self.content)
-
-    def isempty(self):
-        return len(self.content)==0
-
-class Stock(tabel):
+class Stock():
     def __init__(self,stocklist):
-        tabel.__init__(self)
+        self.content=dict()
         for i in stocklist:
             self.content[i.capitalize()]=doubleketting()
 
@@ -60,6 +38,8 @@ class Stock(tabel):
             print(item, " is niet teruggevonden in de stock, typfout?")
             return False
 
+    #houdt een dictionary bij met het aantaal keer dat een item voorkomt in een bestelling
+    #parameter is extraingredienten
     def checkingredient(self,lijstvaningredient):
         countertable=dict()
         for i in lijstvaningredient:
@@ -72,8 +52,8 @@ class Stock(tabel):
 
     #sort methode : producten met vroegst vervaldatum komt eerst
     def sort(self):#oh.. well.. i guess it's in the final version then.
-        tempitem=None;
-        tempposition=0;
+        tempitem=None
+        tempposition=0
         for i in self.content:
             time=self.content[i].size
             tempdoubleketting=doubleketting()

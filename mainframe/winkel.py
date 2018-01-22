@@ -1,8 +1,7 @@
 from builtins import int
 
-from stock import *;
-from adttabel import *
 from Queue_rij import *
+from adttabel import *
 from gebruiker import *
 from werknemer_modified import *
 from Bestelling import *
@@ -11,7 +10,7 @@ def str_to_class(str):#code from https://stackoverflow.com/questions/1176136/con
     return reduce(getattr, str.split("."), sys.modules[__name__])
 
 class winkel:
-    allewerknemers=Tabel()
+    allewerknemers= Tabel()
     werknemerbeschikbaar=Stack()
     werknemersaantwerken=Tabel()
     bestellingenwaiting=Queue()
@@ -86,6 +85,7 @@ class winkel:
         #this function does everything from take bestelling to work to move the bestelling to finished..
         #and logging.
         templist = self.werknemersaantwerken.traverse()#since that we're using wrapper. call the traverse function of the wrapper.
+
         #traverse returns the list of all working people.
         for i in templist:
         #and of course. all of them have to work.
@@ -160,7 +160,7 @@ class winkel:
 
                     for i in range(counter):
                         soort = seperatedline[1]  # de second one indicates which kinda shot it is.
-                        temp = str_to_class("ChocoladeShot")(soort, int(seperatedline[3]), int(seperatedline[4]), int(seperatedline[5]))  # 4,5,6 is jaar maand dag, this part i've changed a little bit, the original maker tends to make it a big Expiry date.
+                        temp = ChocoladeShot(soort, int(seperatedline[3]), int(seperatedline[4]), int(seperatedline[5]))  # 4,5,6 is jaar maand dag, this part i've changed a little bit, the original maker tends to make it a big Expiry date.
                         # and I think that it will make the code too complicated and much longer than what it should be, so i just decided it kinda on my own.
                         # my bad.
                         # so the Expiry date also doesn't work properly...
@@ -181,10 +181,10 @@ class winkel:
                 achternaam = seperatedline[2]
                 workloadofemailadress = seperatedline[3]
                 if seperatedline[0] == "gebruiker":
-                    temp = str_to_class(seperatedline[0].capitalize())(voornaam, achternaam, workloadofemailadress)
+                    temp = Gebruiker(voornaam, achternaam, workloadofemailadress)
                     self.addgebruiker(temp)
                 else:
-                    temp = str_to_class(seperatedline[0].capitalize())(voornaam, achternaam,int(workloadofemailadress))
+                    temp = Werknemer(voornaam, achternaam,int(workloadofemailadress))
                     self.addwerknemers(temp)
                 # voor gebruiker is 3 de emailadress en voor werknemer is 3 de workload
             else:
@@ -274,9 +274,9 @@ class winkel:
                             if ingredient.isdigit() and seperatedline[i-1].isdigit():
                                 print("er is een fout opgetreden bij deze lijn: ",line)
                                 print("er is twee hoeveelheid parameter achter elkaar")
-                            elif ingredient.isdigit() and seperatedline[i-1] not in self.availableingredient:
+                            elif seperatedline[i] not in self.availableingredient and seperatedline[i].isdigit()==False:
                                 print("er is een fout opgetreden bij deze lijn: ",line)
-                                print("u probeert een ingredienten meerdere malen toevoegen die niet in de winkel stock staat")
+                                print("u probeert een ingredienten toevoegen die niet in de winkel stock staat")
                             elif i==3 and ingredient.isdigit():
                                 print("er is een fout opgetreden bij deze lijn: ",line)
                                 print("u begint een ingredientlijst met een getal")

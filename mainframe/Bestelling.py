@@ -13,10 +13,6 @@ class Bestelling:
     def Afgehaald(self):
         self.afgehaald = True
 
-
-    def VoegShotToe(self,Shot):#
-        self.aantalshots.append(Shot)   #1 credit per cholade shot dus +1
-        self.credits += 1
     def VoegIngredientToe(self,Ingredient):
         self.extraIngredient.append(Ingredient)
         if Ingredient in ["Wit","Zwart","Bruin","Melk"]:
@@ -27,10 +23,6 @@ class Bestelling:
 
     def printBestelling(self):
         #beacause it's all string form, this is way easier to print.
-        print("Shots:")
-        for i in self.aantalshots:#well this is not going to work
-            print(i,",",end="")
-            print()
         print("Ingredienten")
         for i in self.extraIngredient:
             print(i,",",end="")

@@ -5,13 +5,3 @@ class Gebruiker:
         self.achternaam = achternaam
         self.email = email
         self.zoeksleutel = None
-
-    def createGebruiker(self,id,voornaam,achternaam,email):
-        self.id = id
-        self.voornaam = voornaam
-        self.achternaam = achternaam
-        self.email = email
-
-    #def destroyGebruiker(self):
-
-    #def retrieve

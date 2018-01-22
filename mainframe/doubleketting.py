@@ -34,10 +34,7 @@ class doubleketting:
         return True
 
     def isempty(self):
-        if self.size==0:
-            return 1
-        else:
-            return 0
+        return self.size==0
 
     def traverse(self):
         counter=1

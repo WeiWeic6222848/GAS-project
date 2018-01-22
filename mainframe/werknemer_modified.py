@@ -5,7 +5,7 @@ class Werknemer:
         self.achternaam = achternaam#name
         self.workload = workload#worload
         self.bestelling=None#bestellingen working
-        self.resterendetijd=None#how much work left
+        self.resterendetijd=0#how much work left
 
     def VeranderWorkload(self,Newworkload):
         self.workload = Newworkload#setworkload function

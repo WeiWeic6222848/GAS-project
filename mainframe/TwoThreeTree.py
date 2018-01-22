@@ -312,8 +312,8 @@ class TwoThreeTree():
                     temp = leafnode.Data[0]
                     leafnode.Data [1] = None
                     print(self.counter)
-                    if(self.counter == 0):
-                        leafnode.InsertToData(temp)
+                    #if(self.counter == 0):
+                        #leafnode.InsertToData(temp)
 
 
             return True
@@ -504,6 +504,13 @@ if __name__ == '__main__':
     tree.insert(0,"text0")
     #tree.insert(25,"text25")
     tree.insert(1,"text1")
+    tree.insert(2,"text2")
+    tree.insert(3,"text3")
+    tree.insert(4,"text4")
+    tree.insert(5,"text5")
+    tree.insert(6,"text6")
+    tree.insert(7,"text7")
+
     #tree.insert(40,"text40")
     #tree.insert(70,"text70")
     #tree.insert(95,"text95")
