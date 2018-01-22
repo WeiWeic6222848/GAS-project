@@ -1,27 +1,29 @@
 from copy import *
 
+#klasse Node met een key en een value
 class Node():
     def __init__(self,key,value):
         self.key = key
         self.content = value
 
+#klasse van een 23 boom dat van onder naar boven groeit
 class TwoThreeTree():
     def __init__(self, Data=[None,None,None], parent=None, Childs=[None,None,None,None]):
         self.Data = Data.copy()  #list met plaats voor drie data items
-        self.parent = parent
+        self.parent = parent        #  parent van de huidige tree
         self.Childs = Childs.copy() # list met plaats voor deelbomen
         self.counter = 0
 
-    def __del__(self):
-        del self
 
-    def getwortel(self):    # geeft de wortel terug.
+
+    def getwortel(self):    # geeft de wortel terug.(Nodig Want de Boom groeit van onder naar boven)
         root = self
         while (root.parent != None):
             root = root.parent
         return root
 
-    def insert(self,key, NewItem):
+
+    def insert(self,key, NewItem): #insert (nodig want de insert helper heeft de root nodig)
         self.InsertHelper(self.getwortel(),key, NewItem)
 
     def DataSize(self): # geeft de size van een data list terug
@@ -31,12 +33,13 @@ class TwoThreeTree():
                 size += 1
         return size
 
+
     def InsertHelper(self, root,key, NewItem): #insert een nieuwe item
         item = Node(key, NewItem)
 
         if (root.Childs[0] == None): #als de root geen kinderen heeft mag het de item toevoegen
 
-            if (root.Data[2] == None):
+            if (root.Data[2] == None): #
 
                 root.InsertToData(item)
                 if (root.Data[2] != None):
@@ -83,10 +86,10 @@ class TwoThreeTree():
 
 
     def split(self): # deze functie wordt gebruikt om een root met 3 items op te splitsen
-        n1 = self
-        n2 = TwoThreeTree([self.Data[2], None, None], [None, None, None, None])
+        n1 = self       #linker deelboom
+        n2 = TwoThreeTree([self.Data[2], None, None], [None, None, None, None]) #rechter deelboom
 
-        if (self.parent == None):
+        if (self.parent == None): #geval dat de parent van de huidige tree leeg is
             p = TwoThreeTree([self.Data[1], None, None], None, [n1, None, None, n2])
             self.parent = p
             n2.parent = p
@@ -96,7 +99,7 @@ class TwoThreeTree():
             p = self.parent
             p.InsertToData(self.Data[1])
 
-            if (p.DataSize() == 2):
+            if (p.DataSize() == 2): # de parent heeft 2 items
                 if (self.Data[0].key > p.Data[0].key):
                     p.Childs[2] = n1
                     p.Childs[3] = n2
@@ -110,8 +113,8 @@ class TwoThreeTree():
                     p.Childs[2].parent = p
 
             else:
-                if(self.Data[0].key <p.Data[0].key ):
-                    if (n2.Data[0].key > p.Childs[2].Data[0].key):
+                if(self.Data[0].key <p.Data[0].key ): #het eerste data element van de huidige boom is kleiner dan het eerste element van de parent van de huidgie boom
+                    if (n2.Data[0].key > p.Childs[2].Data[0].key):  #
                         p.Childs[0] = n1
                         p.Childs[1] = p.Childs[2]
                         p.Childs[2] = n2
@@ -146,6 +149,7 @@ class TwoThreeTree():
             n1.Data[1] = None
             n1.Data[2] = None
 
+        #Geval dat de 4 items van Childs vol is
         if (n1.Childs[0] != None and n1.Childs[1] != None and n1.Childs[2] != None and n1.Childs[3] != None):
             n2.Childs = [n1.Childs[2], None, None, n1.Childs[3]]
             n1.Childs = [n1.Childs[0], None, None, n1.Childs[1]]
@@ -154,14 +158,24 @@ class TwoThreeTree():
             n1.Childs[3].parent = n1
             n1.Childs[0].parent = n1
 
+        #split als er 3 items zijn
         if (p.Data[2] != None):
             p.split()
 
-    def inorder(self):
+
+    def inorder(self):#
+        """
+        functie dat nodig is omdat de boom van onder naar boven groeit
+        :return: geeft een lijst terug met items in inorder
+        """
         return self.inorderhelper(self.getwortel())
 
 
     def isEmpty(self):
+        """
+
+        :return: geeft een bool terug. Als leeg = True
+        """
         root = self.getwortel()
         if(root.Childs == [None,None,None,None] and root.Data == [None,None,None]):
             return True
@@ -170,7 +184,11 @@ class TwoThreeTree():
 
 
     def inorderhelper(self, root): # print de items volgens inorder traverse
+        """
 
+        :param root:
+        :return: geeft een lijst terug met items in order
+        """
         List = []
         if (root.Childs[0] == None):
 
@@ -273,6 +291,8 @@ class TwoThreeTree():
                 return self.retrieveItem(root.Childs[0], searchkey)
             else:
                 return self.retrieveItem(root.Childs[3], searchkey)
+
+
 
     def deleteItem(self, searchkey):
         self.deletehelper(self.getwortel(), searchkey)
