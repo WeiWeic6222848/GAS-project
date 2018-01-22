@@ -18,13 +18,14 @@ class Node:
     def retrieveItem(self, key):
         #als niets in pos i sta dan hoef je niet verder te kijken, doe break, item niet gevonden
         for i in range(3):
-            if not self.arrayItem[i]:
+            if self.arrayItem[i]==None:
                 break
             elif self.arrayItem[i].data == key:
-                return self.arrayItem[i].data
+                return self.arrayItem[i]
         return -1 #ga ik nodig hebben bij retrieve
 
     #de gezochte item verwijderen uit een knoop
+    #heb ik niet meer nodig
     def removeItem(self, delItem):
         delKey = delItem.data
         for i in range(3):
@@ -110,14 +111,15 @@ class Node:
         if self.isLeaf():
             for i in range(self.numOfItems):
                 #of self.arrayItem[i].data werkt ook, overal waar ik getItem gebruik, als k vervang door arrayItem dan zou het ook werken
-                inorder_lijst.append(self.getItem(i).data)
+                inorder_lijst.append(self.getItem(i).item)
             return inorder_lijst
         if not self.isLeaf():
             for i in range(4):
                 if self.getChild(i) != None:
-                    inorder_lijst += self.getChild(i).inorderitem()
+                        inorder_lijst += self.getChild(i).inorderitem()
+                #i<=2 is voor de aarayItem[i](ouder) toe te voegen
                 if i<=2 and self.arrayItem[i]!=None:
-                    inorder_lijst.append(self.arrayItem[i].data)
+                    inorder_lijst.append(self.arrayItem[i].item)
         return inorder_lijst
 
 class Twee34Boom:
@@ -186,8 +188,12 @@ class Twee34Boom:
         if currentNode == None: #root is empty
             return False
         while True:
-            if currentNode.retrieveItem(value) == value:
-                break
+            if currentNode == None:  # root is empty
+                return False
+            temp=currentNode.retrieveItem(value)
+            if temp!=-1:
+                if currentNode.retrieveItem(value).data == value:
+                    break
             else:
                 currentNode = self.get_next_child(currentNode, value)
         # currentnode is nu de juiste nood waar de delete element zit
@@ -197,7 +203,14 @@ class Twee34Boom:
 
         # nu weet je de node en de index van de element to delete
         if currentNode.isLeaf():    #knoop is blad, ga verder
-            currentNode.removeItem(currentNode.arrayItem[delPOs])
+            #currentNode.removeItem(currentNode.arrayItem[delPOs])
+            for i in range(currentNode.getnumOfItems()):
+                if i == 2:
+                    break
+                if currentNode.arrayItem[i + 1] != None:
+                    currentNode.arrayItem[i] = currentNode.arrayItem[i + 1]
+            currentNode.arrayItem[i] = None
+            currentNode.numOfItems -= 1
             return True
 
         #eerst swappen met inorder successor
@@ -215,47 +228,7 @@ class Twee34Boom:
                     IO.arrayItem[i] = IO.arrayItem[i+1]
             IO.arrayItem[i] = None
             IO.numOfItems -= 1
-
-
-        #current node is een blad
-        #curretnoode is 3 of 4 knoop, delete de item
-        #if currentNode.getnumOfItems() >=2:
-         #   currentNode.removeItem(currentNode.arrayItem[delPOs])
-          #  return True
-        #current node is 2 knoop, dan heb je 3 gevallen
-#        elif currentNode.getnumOfItems() == 1:
- #           parent = currentNode.getParent()
-  #          sibling = parent.getChild(1)    #hier nog een functie maken, get sibling (left en right)
-   #         #herverdelen
-    #        if sibling.getnumOfItems >=2:
-     #           closestChild = parent.removeChild(0)    #kan 0 of 2 zijn, moet nog verbeteren
-      #          parent.insertItem(closestChild)
-       #         this = parent.deleteItem()  #dit gaat de grootste verwijderen, moet nog verbeteren, aparte functie om de juiste item te verwijderen?
-        #        currentNode.insertItem(this)
-         #       mChild = sibling.removeChild(3)  #kan index 2 of 3 zijn, moet nog verbeteren
-          #      currentNode.insertChild(0, mChild)
-            #merge and shorten the tree, dit geval wordt enkel bereikt als parent de root is
-           # elif parent.getnumOfItems == 1 and sibling.getnumOfItems == 1:
-            #    this = self.merge(parent, sibling)
-             #   currentNode = self.merge(this, currentNode)
-            #merge
-            #elif parent.getnumOfItems >= 2 and sibling.getnumOfItems == 1:
-             #   this = parent.deleteItem() #dit gaat de grootste verwijderen, moet nog verbeteren
-              #  currentNode.insertItem(this)
-               # currentNode = self.merge(currentNode, sibling)
-        #currentNode.removeItem(toRemove)
-        #return True
-
-    #voegt knopen samen, neemt aan dat sibling een 2 knoop is en ene nood heeft 1 item van zijn parent gestolen
-    #moet nog verbeteren, werkt niet tussen parent en een sibling
-#    def merge(self, node1, node2):
- #       item2 = node2.deleteItem()
-  #      kind2a = node2.removeChild(0)
-   #     kind2b = node2.removeChild(1)
-    #    node1.insertItem(item2)
-     #   node1.insertChild(2,kind2a)
-      #  node1.insertChild(3,kind2b)
-       # return node1
+            return True
 
     def split(self, sNode):
         """
@@ -306,20 +279,22 @@ class Twee34Boom:
         while True:
             child = currentNode.retrieveItem(key)
             if child != -1:     #gevonden
-                print(key, "Found")
-                return True
+                #print(key, "Found")
+                return child
             elif currentNode.isLeaf():  #niet gevonden
-                print(key,"not found")
+                #print(key,"not found")
                 return False
             else:
                 currentNode = self.get_next_child(currentNode, key)   #zoek een niveau dieper
 
-    def inorder(self):
+    def traverse(self):
         """
         Inorder traversal
         :return: lijst van data items
         """
-        return self.root.inorderitem()
+        if self.isEmpty()==False:
+            return self.root.inorderitem()
+        return []
 
     def isEmpty(self):
         """
@@ -327,10 +302,10 @@ class Twee34Boom:
         :return:True als boom leeg is, anders false
         """
         if self.root.getItem(0) == None:
-            print("true")
+            #print("true")
             return True
         else:
-            print("false")
+            #print("false")
             return False
 
     def destroy_tree(self):
@@ -339,29 +314,32 @@ class Twee34Boom:
         """
         self.__init__()
 
+    def getSize(self):
+        return len(self.root.inorderitem())
+
 if __name__ == "__main__":
     # maak een 234boom
     a = Twee34Boom()
     #return true
     a.isEmpty()
     #voeg deze waarden toe
-    a.insert(15,10)
-    a.insert(25,11)
-    a.insert(45,12)
-    a.insert(10,13)
-    a.insert(40,14)
-    a.insert(8,15)
-    a.insert(20,16)
-    a.insert(1,18)
-    a.insert(5,19)
-    a.insert(50,22)
-    a.insert(30,21)
-    a.insert(21,25)
-    a.insert(31,77)
+    a.insert(15,15)
+    a.insert(25,25)
+    a.insert(45,45)
+    a.insert(10,10)
+    a.insert(40,40)
+    a.insert(8,8)
+    a.insert(20,20)
+    a.insert(1,1)
+    a.insert(5,5)
+    a.insert(50,50)
+    a.insert(30,30)
+    a.insert(21,21)
+    a.insert(31,31)
     # return false
     a.isEmpty()
     # geeft alle data items van de boom weer
-    print(a.inorder())
+    print(a.traverse())
     #return true en print ook found
     a.retrieve(50)
     a.retrieve(45)
@@ -371,21 +349,21 @@ if __name__ == "__main__":
     #verwijdert 40
     a.remove(25)
     #geeft alle data items in de boom weer
-    print(a.inorder())
+    print(a.traverse())
     # return false en print not found
     a.retrieve(25)
 
     a.remove(10)
-    print(a.inorder())
+    print(a.traverse())
     a.retrieve(10)
     a.remove(45)
-    print(a.inorder())
+    print(a.traverse())
     a.retrieve(45)
-    a.insert(100,105)
-    a.insert(70, 115)
-    a.insert(80, 5)
-    a.insert(78, 17)
-    print(a.inorder())
+    a.insert(100,100)
+    a.insert(70, 70)
+    a.insert(80, 80)
+    a.insert(78, 78)
+    print(a.traverse())
     a.isEmpty()
     #verwijder de boom
     a.destroy_tree()
