@@ -39,7 +39,7 @@ class TwoThreeTree():
 
         if (root.Childs[0] == None): #als de root geen kinderen heeft mag het de item toevoegen
 
-            if (root.Data[2] == None): #
+            if (root.Data[2] == None): #als de data niet 3 elementen heeft mmoet het niet gesplitst worden
 
                 root.InsertToData(item)
                 if (root.Data[2] != None):
@@ -47,32 +47,32 @@ class TwoThreeTree():
 
         elif (root.Data[0] != None and root.Data[1] != None): # als er 2 data items zijn in de root
 
-            if (item.key < root.Data[0].key):
+            if (item.key < root.Data[0].key): # als key kleiner is dan eerste data item recursieve call naar linker boom
                 self.InsertHelper(root.Childs[0],key, NewItem)
             elif (item.key < root.Data[1].key):
-                self.InsertHelper(root.Childs[2],key, NewItem)
+                self.InsertHelper(root.Childs[2],key, NewItem)# als key kleiner is groter dan 1ste data item en kleiner dan 2e data item dan recursieve call naar middelste deelboom
             else:
 
-                self.InsertHelper(root.Childs[3],key, NewItem)
+                self.InsertHelper(root.Childs[3],key, NewItem) # als key groter dan 2e data item dan recursieve call naar rechter deelboom
 
         else: # als er 1 data item is in de root
 
-            if (item.key < root.Data[0].key):
+            if (item.key < root.Data[0].key):# als key kleiner is dan eerste data item recursieve call naar linker boom
                 self.InsertHelper(root.Childs[0],key, NewItem)
             else:
-                self.InsertHelper(root.Childs[3],key, NewItem)
+                self.InsertHelper(root.Childs[3],key, NewItem)#recursieve call naar rechter deelboom
 
     def InsertToData(self, Item): # gebruikt om items in de data item list toe te voegen. De items worden ook gesorteerd
 
-        if self.Data[0] == None:
+        if self.Data[0] == None: # als List van Data leeg is
             self.Data[0] = Item
-        elif (self.Data[1] == None):
+        elif (self.Data[1] == None): # als List van Data 1 element bevat
             if Item.key > self.Data[0].key:
                 self.Data[1] = Item
             else:
                 self.Data[1] = self.Data[0]
                 self.Data[0] = Item
-        elif (self.Data[2] == None):
+        elif (self.Data[2] == None):# als list van Data 2 elementen bevat
             if (Item.key < self.Data[0].key):
                 self.Data[2] = self.Data[1]
                 self.Data[1] = self.Data[0]
@@ -90,13 +90,13 @@ class TwoThreeTree():
         n2 = TwoThreeTree([self.Data[2], None, None], [None, None, None, None]) #rechter deelboom
 
         if (self.parent == None): #geval dat de parent van de huidige tree leeg is
-            p = TwoThreeTree([self.Data[1], None, None], None, [n1, None, None, n2])
+            p = TwoThreeTree([self.Data[1], None, None], None, [n1, None, None, n2]) #maak nieuwe parent
             self.parent = p
             n2.parent = p
             n1.Data = [n1.Data[0], None, None]
 
-        else:
-            p = self.parent
+        else: # parent niet leeg
+            p = self.parent #parent wordt  sekf.parent
             p.InsertToData(self.Data[1])
 
             if (p.DataSize() == 2): # de parent heeft 2 items
@@ -112,7 +112,7 @@ class TwoThreeTree():
                     p.Childs[0].parent = p
                     p.Childs[2].parent = p
 
-            else:
+            else:# de parent heeft geen 2 items
                 if(self.Data[0].key <p.Data[0].key ): #het eerste data element van de huidige boom is kleiner dan het eerste element van de parent van de huidgie boom
                     if (n2.Data[0].key > p.Childs[2].Data[0].key):  #
                         p.Childs[0] = n1
@@ -127,7 +127,7 @@ class TwoThreeTree():
                     p.Childs[2].parent = p
                     p.Childs[3].parent = p
 
-                elif (self.Data[0].key < p.Data[1].key):
+                elif (self.Data[0].key < p.Data[1].key): #het eerste data element van de huidige boom is kleiner dan het eerste element van de parent van de huidgie boom
                     p.Childs[1] = n1
                     p.Childs[2] = n2
                     p.Childs[1].parent = p
@@ -190,16 +190,16 @@ class TwoThreeTree():
         :return: geeft een lijst terug met items in order
         """
         List = []
-        if (root.Childs[0] == None):
+        if (root.Childs[0] == None): # als er geen deelbomen zijn
 
             for i in root.Data:
                 if i != None:
-                    List.append(i.content)
+                    List.append(i.content) #voegt de niet none items toe aan list
 
 
 
-        elif (root.Data[1] != None):
-
+        elif (root.Data[1] != None): # als er 2 items zit in de data list
+            #in deze volgorde itemse toevoegen : RechterboomItem(recursive call) -> Linker data item -> Middledeelboom (recursive call) -> rechter data item -> RechterDeelBoom (recursive call)
             List += self.inorderhelper(root.Childs[0])
             #print(root.Data[0].key)
             if(root.Data[0] != None):
@@ -209,7 +209,7 @@ class TwoThreeTree():
             if (root.Data[1] != None):
                 List.append(root.Data[1].content)
             List += self.inorderhelper(root.Childs[3])
-        else:
+        else: #als er 1 data element
             List += self.inorderhelper(root.Childs[0])
             #print(root.Data[0].key)
             if (root.Data[0] != None):
@@ -221,7 +221,7 @@ class TwoThreeTree():
 
     def findNode(self, root, searchkey): # zoekt de node op met een bepaalde searchkey. geeft een tuple terug met de node en met de index van het item met de searcjkey
 
-
+        #kijkt in huidige Data
         if(root.Data[0] != None and root.Data[0].key == searchkey):
             return (root,0)
 
@@ -231,10 +231,11 @@ class TwoThreeTree():
         elif (root.Data[2] != None and root.Data[2].key == searchkey):
             return (root, 2)
 
-
+        #kijkt of er geen kinderen zijn
         elif (root.Childs[0] == None):
             return None
 
+        #recursive call naar 1 van de deelbomen (als er 2 data items zijn)
         elif (root.Data[1] != None):
             if (searchkey < root.Data[0].key):
                 return self.findNode(root.Childs[0], searchkey)
@@ -243,12 +244,14 @@ class TwoThreeTree():
             else:
                 return self.findNode(root.Childs[3], searchkey)
 
-
+        #wordt gebruikt bij het deleten van de laatste elementen
         elif(root.Data == [None,None,None]):
             if(root.Childs[0].Data[0].key == searchkey):
                 return (root.Childs[0],0)
             else:
                 return (root.Childs[0],1)
+
+        #recursive call naar 1 van de deelbomen (als er 2 data items zijn)
         else:
             if (searchkey < root.Data[0].key):
                 return self.findNode(root.Childs[0], searchkey)
@@ -258,9 +261,21 @@ class TwoThreeTree():
 
 
     def retrieve(self,searchkey):
+        """
+
+        :param searchkey
+        :return: geeft de value met de searckkey als key terug
+        """
         return self.retrieveItem(self.getwortel(),searchkey)
 
     def retrieveItem(self, root, searchkey): #geeft true terug als het item bestaat
+        """
+
+        :param searchkey , root
+        :return: geeft de value met de searckkey als key terug
+        """
+
+        #Op zelfde manier als findnode alleen geeft het de value van de key terug
         if (searchkey == root.Data[0].key):
 
             return root.Data[0].content
@@ -298,11 +313,12 @@ class TwoThreeTree():
         self.deletehelper(self.getwortel(), searchkey)
 
     def deletehelper(self, root, searchkey): # delete een item met een bepaalde searchkey
-        node = self.findNode(root, searchkey)
+
+        node = self.findNode(root, searchkey) # de knoop waarin het te delete item bevind en op welke plaats (tuple (tree, index))
         leafnode = node[0]
-        if(node != None):
-            IS = self.InorderSuccessor(node[0])
-            if(node[0].Childs[0] != None):
+        if(node != None): #als node gevonden is
+            IS = self.InorderSuccessor(node[0])# zoek de inorder successor
+            if(node[0].Childs[0] != None): #Als er kinderen zijn
 
 
                 temp = node[0].Data[node[1]]
@@ -316,13 +332,13 @@ class TwoThreeTree():
                 IS[0].Data[IS[1]] = temp
                 leafnode = IS[0]
 
-            if(leafnode.DataSize() == 1 ):
+            if(leafnode.DataSize() == 1 ): #als maar 1 data element
                 leafnode.Data[IS[1]] = None
                 if(leafnode.parent == None and leafnode.Data == [None,None,None] and leafnode.Childs == [None,None,None,None]):
                     return True
                 self.fix(leafnode)
 
-            else:
+            else: #als geen kinderen
                 if(node[1] == 0):
                     temp = leafnode.Data[1]
                     leafnode.Data[0] = None
@@ -331,7 +347,7 @@ class TwoThreeTree():
                 else:
                     temp = leafnode.Data[0]
                     leafnode.Data [1] = None
-                    print(self.counter)
+
                     #if(self.counter == 0):
                         #leafnode.InsertToData(temp)
 
@@ -346,18 +362,13 @@ class TwoThreeTree():
 
     def fix(self,root): # gebruikt voor het herverdelen en samenvoegen na een delete
 
-        if(root.parent == None):
+        if(root.parent == None):# als root moet verwijdert worden
             if(root.Childs[0].Childs[0] == None and root.Childs[0].Childs[3] == None):
                 self.counter += 1
                 if(self.counter == 2):
-
-
                     self.parent = None
-
-
                     self.counter = 0
-                elif(self.counter == 3):
-                    root.Childs[0].Data[0] = None
+
 
             elif(root.Childs[0].Childs[0].Data[0] != None and root.Childs[0].Childs[3].Data[0]!= None):
                 root.Childs[0].Childs[2] = root.Childs[0].Childs[3]
@@ -376,6 +387,9 @@ class TwoThreeTree():
                 root.Childs[0].parent = None
 
         else:
+            #redistribute : als een aangrenzende sibling van n heeft 2 items
+            #Merge : kies een aangrenzende sibling en verplaats het juiste item van parent naar sibling
+
             p = root.parent
             counter = 0
             for i in p.Childs:
@@ -392,8 +406,8 @@ class TwoThreeTree():
 
     def redistirbute(self,root,sibling):#herverdeeld de items
         p = root.parent
-        if(p.Data[1] == None):
-            if(root == p.Childs[0]):
+        if(p.Data[1] == None): #als parent 1 item heeft
+            if(root == p.Childs[0]):# als root linker deelboom is
                 root.Data[0] = p.Data[0]
                 p.Data[0] = sibling.Data[0]
                 sibling.Data[0] = sibling.Data[1]
@@ -403,7 +417,7 @@ class TwoThreeTree():
                     sibling.Childs[0] = sibling.Childs[2]
                     sibling.Childs[2] = None
 
-            else:
+            else:#als root rechter deelboom is
                 root.Data[0] = p.Data[0]
                 p.Data[0] = sibling.Data[1]
                 sibling.Data[1] = None
@@ -414,8 +428,8 @@ class TwoThreeTree():
                     sibling.Childs[2] = None
 
 
-        else:
-            if(root == p.Childs[0]):
+        else:# als parent meer dan 1 item heeft
+            if(root == p.Childs[0]):#als root linkerdeelboom is
                 if(sibling == p.Childs[2]):
                     root.Data[0] = p.Data[0]
                     p.Data[0] = sibling.Data[0]
@@ -430,7 +444,7 @@ class TwoThreeTree():
                     p.Childs[3].Data[1] = None
 
 
-            elif(root == p.Childs[2]):
+            elif(root == p.Childs[2]):#als root middeldeelboom is
                 if(sibling == p.Childs[0]):
                     root.Data[0] = p.Data[0]
                     p.Data[0] = sibling.Data[1]
@@ -440,7 +454,7 @@ class TwoThreeTree():
                     p.Data[1] = sibling.Data[0]
                     sibling.Data[0] = sibling.Data[1]
                     sibling.Data[1] = None
-            else:
+            else:# Als root rechter deelboom is
                 if(sibling == p.Childs[2]):
                     root.Data[0] = p.Data[1]
                     p.Data[1] = sibling.Data[1]
@@ -456,32 +470,32 @@ class TwoThreeTree():
 
     def merge(self,root): # voegt de items samen
         p = root.parent
-        if(p.Data[1] != None):
-            if(root == p.Childs[0]):
+        if(p.Data[1] != None):#als p een 1 item heeft
+            if(root == p.Childs[0]):#linker deelboom
                 p.Childs[0] = p.Childs[2]
                 p.Childs[2] = None
                 p.Childs[0].InsertToData(p.Data[0])
                 p.Data[0] = p.Data[1]
                 p.Data[1] = None
-            elif(root == p.Childs[2]):
+            elif(root == p.Childs[2]):#middel deelboom
                 p.Childs[3].InsertToData(p.Data[1])
                 p.Data[1] = None
 
             else:
-                p.Childs[3] = p.Childs[2]
+                p.Childs[3] = p.Childs[2]#rechter deelboom
                 p.Childs[2] = None
                 p.Childs[3].InsertToData(p.Data[1])
                 p.Data[1] = None
 
-        else:
-            if(root == p.Childs[0]):
+        else:#als p 2 items heeft
+            if(root == p.Childs[0]):#linkerdeelboom
                 p.Childs[0].InsertToData(p.Data[0])
                 p.Childs[0].InsertToData(p.Childs[3].Data[0])
                 p.Childs[3].Data[0] = None
                 p.Data[0] = None
                 self.fix(p)
 
-            else:
+            else:#rechterdeelboom
                 p.Childs[0].InsertToData(p.Data[0])
                 p.Data[0] = None
                 self.fix(p)
@@ -493,6 +507,7 @@ class TwoThreeTree():
 
 
     def InorderSuccessor(self,root): #zoekt de inorder succesor
+        #geeft een tuple met de knoop en de index
         if(root.Childs[0] == None):
             if(root.Data[1] == None):
                 return (root,0)
@@ -529,7 +544,7 @@ if __name__ == '__main__':
     print(tree.retrieveItem(tree.getwortel(), 6))
     print(tree.retrieveItem(tree.getwortel(), 20))
     print(tree.retrieveItem(tree.getwortel(), 27))
-    print(tree.getwortel().Data)
+
 
     print(tree.inorder())
 
